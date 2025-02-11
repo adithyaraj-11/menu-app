@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import logo from './react.svg';
 import Menu from './menu';
 import Ratings from './Ratings';
 import Comments from './Comments';
@@ -92,8 +93,16 @@ function App() {
       {!showImages && showRatings && <Ratings />}
       {!showImages && !showRatings && !showComments && <Menu day={currentDay} week={monthWeekNumber} />}
       {showComments && <Comments />}
+
+      <footer className="footer">
+      Developed with 
+      <img src={logo} alt="React Logo" className="react-logo" />
+      , by Adithyaraj K
+    </footer>
     </div>
+    
   );
 }
+
 
 export default App;

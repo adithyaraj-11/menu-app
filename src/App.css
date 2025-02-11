@@ -2,7 +2,6 @@
 .App {
   font-family: Arial, sans-serif;
   padding-top: 70px;
-  margin: 0;
 }
 
 /* Navbar styles */
@@ -187,6 +186,8 @@ button:hover {
 
 .comments-table table {
   width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
 }
 
@@ -218,6 +219,36 @@ button:hover {
 input[type="date"] {
   margin-right: 10px;
 }
+
+.footer {
+  position:relative;  
+  bottom: 0;
+  background-color: #ffffff;
+  color: rgb(156, 156, 156);
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.react-logo {
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 /* Adjust filter width for mobile */
 @media screen and (max-width: 768px) {
