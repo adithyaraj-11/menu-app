@@ -1,113 +1,135 @@
 /* General styles for the ratings component */
 .ratings {
-    text-align: center;
-    padding: 20px;
+  text-align: center;
+  padding: 20px;
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+/* Ensure the table is contained */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Enables horizontal scrolling if needed */
+}
+
+.ratings h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Table styling */
+.ratings table {
+  width: 100%;
+  min-width: 600px; /* Prevents table from squishing */
+  border-collapse: collapse;
+  margin: 20px auto;
+}
+
+.ratings th,
+.ratings td {
+  padding: 12px 20px;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.ratings th {
+  background-color: #f2f2f2;
+  color: #555;
+}
+
+.ratings tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.ratings tr:hover {
+  background-color: #eaeaea;
+}
+
+/* Star rating styles */
+.stars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem; /* Adjust font size for larger stars */
+}
+
+.full-star {
+  color: gold;
+}
+
+.half-star {
+  color: orange;
+}
+
+.empty-star {
+  color: lightgray;
+}
+
+.rating-number {
+  font-size: 1rem;
+  color: #333;
+  margin-left: 8px;
+}
+
+/* User rating stars */
+.stars span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stars span:hover {
+  color: gold; /* Hover effect */
+}
+
+/* Submit button styling */
+.submit-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.submit-btn {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  width: auto; /* Make sure the button isn't stretched */
+}
+
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .ratings {
+      padding: 10px; /* Adjust padding */
   }
-  
-  .ratings h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
+
+  .table-container {
+      overflow-x: auto; /* Ensures scrolling if needed */
   }
-  
+
   .ratings table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: collapse;
+      width: 100%;
+      min-width: 100%; /* Prevents overflow */
   }
-  
+
   .ratings th,
   .ratings td {
-    padding: 12px 20px;
-    text-align: center;
-    border: 1px solid #ddd;
-    font-size: 1rem;
-  }
-  
-  .ratings th {
-    background-color: #f2f2f2;
-    color: #555;
-  }
-  
-  .ratings tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .ratings tr:hover {
-    background-color: #eaeaea;
-  }
-  
-  /* Star rating styles */
-  .stars {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem; /* Adjust font size for larger stars */
-  }
-  
-  .full-star {
-    color: gold;
-  }
-  
-  .half-star {
-    color: orange;
-  }
-  
-  .empty-star {
-    color: lightgray;
-  }
-  
-  .rating-number {
-    font-size: 1rem;
-    color: #333;
-    margin-left: 8px;
-  }
-  
-  /* User rating stars */
-  .stars span {
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-  
-  .stars span:hover {
-    color: gold; /* Hover effect */
-  }
-  
-  /* Submit button styling */
-  .submit-btn-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .submit-btn {
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
-    width: auto; /* Make sure the button isn't stretched */
-  }
-  
-  .submit-btn:hover {
-    background-color: #45a049;
-  }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 768px) {
-    .ratings table {
-      width: 100%;
+      padding: 8px 10px;
       font-size: 0.9rem;
-    }
-  
-    .stars {
-      font-size: 1.5rem;
-    }
-  
-    .submit-btn {
-      width: 100%;
-    }
   }
-  
+
+  .stars {
+      font-size: 1.5rem;
+  }
+
+  .submit-btn {
+      width: 100%;
+  }
+}
