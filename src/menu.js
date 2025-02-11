@@ -13,7 +13,7 @@ function Menu({ day, week }) {
 
     async function fetchMenu() {
       try {
-        const response = await fetch(`http://localhost:5000/api/menu/${day}/${week}`);
+        const response = await fetch(`https://menu-app-553s.onrender.com/api/menu/${day}/${week}`);
         if (!response.ok) {
           throw new Error('Failed to fetch menu');
         }

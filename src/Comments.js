@@ -11,7 +11,7 @@ function Comments() {
 
   // Fetch comments from the backend on component mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/comments')
+    fetch('https://menu-app-553s.onrender.com/api/comments')
       .then(response => response.json())
       .then(data => {
         console.log('Fetched data:', data);
@@ -33,7 +33,7 @@ function Comments() {
     e.preventDefault();
     if (meal && newComment.trim()) {
       // Send the new comment to the backend
-      fetch('http://localhost:5000/api/comments/add', {
+      fetch('https://menu-app-553s.onrender.com/api/comments/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ meal, comment: newComment }),

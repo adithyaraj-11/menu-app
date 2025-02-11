@@ -7,7 +7,7 @@ function Ratings() {
 
   useEffect(() => {
     // Fetch ratings from the server
-    fetch('http://localhost:5000/api/ratings')
+    fetch('https://menu-app-553s.onrender.com/api/ratings')
       .then(response => response.json())
       .then(data => setRatings(data))
       .catch(error => console.error('Error fetching ratings:', error));
@@ -76,7 +76,7 @@ function Ratings() {
       const newRating = userRatings[meal.meal];
       if (newRating) {
         // Update the rating in the backend
-        fetch('http://localhost:5000/api/ratings/update', {
+        fetch('https://menu-app-553s.onrender.com/api/ratings/update', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ function Ratings() {
           .then(response => response.json())
           .then(() => {
             // Re-fetch the ratings after update
-            fetch('http://localhost:5000/api/ratings')
+            fetch('https://menu-app-553s.onrender.com/api/ratings')
               .then(response => response.json())
               .then(data => setRatings(data))
               .catch(error => console.error('Error fetching updated ratings:', error));
