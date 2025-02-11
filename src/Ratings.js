@@ -105,6 +105,7 @@ function Ratings() {
       {ratings.length === 0 ? (
         <p>No ratings available</p>
       ) : (
+        <div className="table-container">
         <table>
           <thead>
             <tr>
@@ -125,6 +126,7 @@ function Ratings() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
       <div className="submit-btn-container">
       <button onClick={handleSubmit} className="submit-btn">Submit Ratings</button>
