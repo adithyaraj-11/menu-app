@@ -11,7 +11,7 @@ function Comments() {
   const [filterDate, setFilterDate] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/comments')
+    fetch('https://menu-app-553s.onrender.com/api/comments')
       .then(response => response.json())
       .then(data => {
         console.log('Fetched data:', data);
@@ -34,7 +34,7 @@ function Comments() {
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (meal && newComment.trim()) {
-      fetch('http://localhost:5000/api/comments/add', {
+      fetch('https://menu-app-553s.onrender.com/api/comments/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ meal, comment: newComment }),
