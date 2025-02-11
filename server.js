@@ -21,8 +21,15 @@ menuDb.run(`
     meal TEXT PRIMARY KEY,
     average_rating REAL,
     rating_count INTEGER
-  )
+  );
+
+  INSERT OR IGNORE INTO ratings (meal, average_rating, rating_count) VALUES
+  ('breakfast', 0, 0),
+  ('lunch', 0, 0),
+  ('snacks', 0, 0),
+  ('dinner', 0, 0);
 `);
+
 
 menuDb.run(`CREATE TABLE IF NOT EXISTS comments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
