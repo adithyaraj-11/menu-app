@@ -135,7 +135,7 @@ function Ratings() {
             <tbody>
               {ratings.map((meal, index) => (
                 <tr key={index}>
-                  <td>toCamelCase({meal.meal})</td>
+                  <td>{toCamelCase(meal.meal)}</td>
                   <td>{renderStars(meal.average_rating)}</td>
                   <td>{meal.rating_count}</td>
                   <td>{renderUserStars(meal.meal, meal.meal_type)}</td>
