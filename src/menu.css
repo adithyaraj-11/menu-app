@@ -1,0 +1,49 @@
+
+.menu-container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+  }
+  
+  .meal-section {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f4f4f4;
+    color: black; 
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .meal-section h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .meal-timing {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  ul li {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  
+  
+  .meal-section:hover {
+    background-color: #e9ecef;
+  }
+  
+  @media (max-width: 768px) {
+    .menu-container {
+      grid-template-columns: 1fr; 
+    }
+  }
+  
