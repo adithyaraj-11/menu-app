@@ -29,8 +29,8 @@ function Ratings() {
       return false; // Prevent crashes
     }
   
-    //const now = new Date();
-    const currentTime = 19*60+20;
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes()
 
     return currentTime >= mealTimes[mealType][0] && currentTime <= mealTimes[mealType][1];
   };
