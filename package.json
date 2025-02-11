@@ -13,8 +13,8 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "serve -s build",
-    "build": "npm install web-vitals serve --save ",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
