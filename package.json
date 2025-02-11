@@ -13,8 +13,8 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "npm start",
-    "build": "npm install express sqlite3 cors web-vitals",
+    "start": "serve -s build",
+    "build": "npm install web-vitals serve --save ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
