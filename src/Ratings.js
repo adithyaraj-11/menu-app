@@ -14,7 +14,7 @@ function Ratings() {
   const [userRatings, setUserRatings] = useState({});
 
   useEffect(() => {
-    fetch('https://localhost:3000/api/ratings')
+    fetch('https://menu-app-553s.onrender.com/api/ratings')
       .then(response => response.json())
       .then(data => setRatings(data))
       .catch(error => console.error('Error fetching ratings:', error));
@@ -90,14 +90,14 @@ function Ratings() {
           return;
         }
 
-        fetch('https://localhost:3000/api/ratings/update', {
+        fetch('https://menu-app-553s.onrender.com/api/ratings/update', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ meal: meal.meal, newRating }),
         })
           .then(response => response.json())
           .then(() => {
-            fetch('https://localhost:3000/api/ratings')
+            fetch('https://menu-app-553s.onrender.com/api/ratings')
               .then(response => response.json())
               .then(data => setRatings(data))
               .catch(error => console.error('Error fetching updated ratings:', error));
@@ -110,6 +110,9 @@ function Ratings() {
   return (
     <div className="ratings">
       <h2>Daily Ratings</h2>
+      {ratings.length === 0 ? (
+        <p>No ratings available</p>
+      ) : (
         <div className="table-container">
           <table>
             <thead>
@@ -132,6 +135,7 @@ function Ratings() {
             </tbody>
           </table>
         </div>
+      )}
       <div className="submit-btn-container">
         <button onClick={handleSubmit} className="submit-btn">Submit Ratings</button>
       </div>
