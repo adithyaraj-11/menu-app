@@ -47,6 +47,7 @@
 /* Mobile dropdown */
 .menu-toggle {
   display: none;
+  color: white;
   font-size: 24px;
   cursor: pointer;
 }
@@ -54,6 +55,7 @@
 @media screen and (max-width: 768px) {
   .menu-toggle {
     display: block;
+    color: white;
   }
 
   .nav-links {
