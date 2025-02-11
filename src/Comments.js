@@ -8,32 +8,33 @@ function Comments() {
   const [allComments, setAllComments] = useState([]);
   const [filteredComments, setFilteredComments] = useState([]);
   const [filterMeal, setFilterMeal] = useState('');
+  const [filterDate, setFilterDate] = useState('');
 
-  // Fetch comments from the backend on component mount
   useEffect(() => {
-    fetch('https://menu-app-553s.onrender.com/api/comments')
+    fetch('http://localhost:5000/api/comments')
       .then(response => response.json())
       .then(data => {
         console.log('Fetched data:', data);
 
-        // Format date for all fetched comments
         const formattedData = data.map(comment => ({
           ...comment,
-          date: new Date(comment.date).toLocaleDateString('en-IN'), // Ensure all dates are in 'en-IN' format
+          date: new Date(comment.date).toLocaleDateString('en-IN'),
         }));
 
         setAllComments(formattedData);
-        setFilteredComments(formattedData); // Initially, display all comments
+        setFilteredComments(formattedData);
       })
       .catch(error => console.error('Error fetching comments:', error));
   }, []);
 
-  // Handle comment submission
+  useEffect(() => {
+    filterComments();
+  }, [allComments, filterMeal, filterDate]);
+
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (meal && newComment.trim()) {
-      // Send the new comment to the backend
-      fetch('https://menu-app-553s.onrender.com/api/comments/add', {
+      fetch('http://localhost:5000/api/comments/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ meal, comment: newComment }),
@@ -42,24 +43,16 @@ function Comments() {
         .then(data => {
           if (data.success) {
             setMessage('Comment submitted successfully!');
-            setNewComment(''); // Clear the input field
+            setNewComment('');
 
-            // Add new comment with the formatted date
             const newCommentData = {
               meal,
               comment: newComment,
-              date: new Date().toLocaleDateString('en-IN'), // New comment's date formatted to 'en-IN'
+              date: new Date().toLocaleDateString('en-IN'),
             };
 
-            setAllComments(prevComments => [
-              ...prevComments,
-              newCommentData, // Add the new comment with the formatted date
-            ]);
+            setAllComments(prevComments => [...prevComments, newCommentData]);
 
-            // Reapply filters after submitting the comment
-            filterComments(filterMeal);
-
-            // Reset the message after 3 seconds
             setTimeout(() => setMessage(''), 3000);
           } else {
             setMessage('Failed to submit comment. Please try again.');
@@ -68,36 +61,29 @@ function Comments() {
         .catch(error => {
           console.error('Error adding comment:', error);
           setMessage('Failed to submit comment. Please try again.');
+          setTimeout(() => setMessage(''), 3000);
         });
     } else {
       setMessage('Please select a meal and write a comment.');
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
-  // Filter the comments based on selected meal
-  const filterComments = (mealFilter) => {
+  const filterComments = () => {
     let filtered = allComments;
-
-    // If a filterMeal is set, apply the filter
-    if (mealFilter) {
-      filtered = filtered.filter(comment => comment.meal === mealFilter);
+    if (filterMeal) {
+      filtered = filtered.filter(comment => comment.meal === filterMeal);
     }
-
+    if (filterDate) {
+      filtered = filtered.filter(comment => comment.date === filterDate);
+    }
     setFilteredComments(filtered);
-  };
-
-  // Handle filter change
-  const handleFilterChange = (e) => {
-    const selectedMeal = e.target.value;
-    setFilterMeal(selectedMeal); // Update filterMeal state
-    filterComments(selectedMeal); // Immediately filter using the selected meal
   };
 
   return (
     <div className="comments">
       <h2>Submit Feedback for {meal || 'a meal'}</h2>
 
-      {/* Dropdown for selecting the meal */}
       <div className="meal-select">
         <label htmlFor="meal">Select Meal: </label>
         <select id="meal" value={meal} onChange={(e) => setMeal(e.target.value)}>
@@ -109,10 +95,8 @@ function Comments() {
         </select>
       </div>
 
-      {/* Success/Error message */}
       {message && <p className="message">{message}</p>}
 
-      {/* Comment Submission Form */}
       <form onSubmit={handleCommentSubmit}>
         <textarea
           value={newComment}
@@ -122,16 +106,11 @@ function Comments() {
         <button type="submit">Submit Comment</button>
       </form>
 
-      {/* Filters */}
       <div className="filters">
         <h3>Filter Comments</h3>
         <div className="meal-filter">
           <label htmlFor="filterMeal">Filter by Meal: </label>
-          <select
-            id="filterMeal"
-            value={filterMeal}
-            onChange={handleFilterChange} // Trigger filter on change
-          >
+          <select id="filterMeal" value={filterMeal} onChange={(e) => setFilterMeal(e.target.value)}>
             <option value="">All Meals</option>
             <option value="breakfast">Breakfast</option>
             <option value="lunch">Lunch</option>
@@ -139,9 +118,18 @@ function Comments() {
             <option value="dinner">Dinner</option>
           </select>
         </div>
+
+        <div className="date-filter">
+          <label htmlFor="filterDate">Filter by Date: </label>
+          <input
+            id="filterDate"
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(new Date(e.target.value).toLocaleDateString('en-IN'))}
+          />
+        </div>
       </div>
 
-      {/* Comments Table */}
       <div className="comments-table">
         <table>
           <thead>
@@ -151,22 +139,26 @@ function Comments() {
               <th>Comment</th>
             </tr>
           </thead>
-          <tbody>
-            {filteredComments.length > 0 ? (
-              filteredComments.map((comment, index) => (
-                <tr key={index}>
-                  <td>{comment.date}</td>
-                  <td>{comment.meal}</td>
-                  <td>{comment.comment}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="3">No comments available.</td>
-              </tr>
-            )}
-          </tbody>
         </table>
+        <div className="table-body">
+          <table>
+            <tbody>
+              {filteredComments.length > 0 ? (
+                filteredComments.map((comment, index) => (
+                  <tr key={index}>
+                    <td>{comment.date}</td>
+                    <td>{comment.meal}</td>
+                    <td>{comment.comment}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">No comments available.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -29,22 +29,31 @@ function Ratings() {
       return false; // Prevent crashes
     }
   
-    const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
+    //const now = new Date();
+    const currentTime = 19*60+20;
 
     return currentTime >= mealTimes[mealType][0] && currentTime <= mealTimes[mealType][1];
   };
 
-  const handleStarClick = (meal, mealType, rating) => {
-    if (!isWithinTimeRange(mealType)) {
-      alert(`You can rate only during its respective time.`);
+  const handleStarClick = (meal, rating) => {
+    if (!meal) {
+      console.error("Meal type is undefined");
       return;
     }
+  
+    if (!isWithinTimeRange(meal)) {
+      alert(`You can rate ${meal} only during its respective time.`);
+      return;
+    }
+  
+    console.log(`Meal: ${meal}, Rating: ${rating}`); // Debugging log
+  
     setUserRatings(prevState => ({
       ...prevState,
       [meal]: rating
     }));
   };
+  
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -67,15 +76,17 @@ function Ratings() {
     );
   };
 
-  const renderUserStars = (meal, mealType) => {
+  const renderUserStars = (meal) => {
     const userRating = userRatings[meal] || 0;
+    console.log(`Rendering stars for ${meal}, User Rating: ${userRating}`);
+  
     return (
       <span className="stars">
         {Array.from({ length: 5 }, (_, index) => (
           <span
             key={index}
             className={index < userRating ? "full-star" : "empty-star"}
-            onClick={() => handleStarClick(meal, mealType, index + 1)}
+            onClick={() => handleStarClick(meal, index + 1)}
           >
             {index < userRating ? '★' : '☆'}
           </span>
@@ -85,28 +96,25 @@ function Ratings() {
   };
 
   const handleSubmit = () => {
-    ratings.forEach(meal => {
-      const newRating = userRatings[meal.meal];
-      if (newRating) {
-        if (!isWithinTimeRange(meal.meal_type)) {
-          alert(`You can rate ${meal.meal_type} only during its respective time.`);
-          return;
-        }
-
-        fetch('https://menu-app-553s.onrender.com/api/ratings/update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ meal: meal.meal, newRating }),
-        })
-          .then(response => response.json())
-          .then(() => {
-            fetch('https://menu-app-553s.onrender.com/api/ratings')
-              .then(response => response.json())
-              .then(data => setRatings(data))
-              .catch(error => console.error('Error fetching updated ratings:', error));
-          })
-          .catch(error => console.error('Error updating ratings:', error));
+    Object.entries(userRatings).forEach(([meal, rating]) => {
+      if (!isWithinTimeRange(meal)) {
+        console.warn(`Skipping ${meal}, not in time range`);
+        return; // Skip meals not in their time range
       }
+  
+      fetch('https://menu-app-553s.onrender.com/api/ratings/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meal, newRating: rating }),
+      })
+        .then(response => response.json())
+        .then(() => {
+          fetch('https://menu-app-553s.onrender.com/api/ratings')
+            .then(response => response.json())
+            .then(data => setRatings(data))
+            .catch(error => console.error('Error fetching updated ratings:', error));
+        })
+        .catch(error => console.error('Error updating ratings:', error));
     });
   };
 

@@ -54,6 +54,47 @@ menuDb.run(`CREATE TABLE IF NOT EXISTS comments (
   date TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
 )`);
 
+
+const resetRatings = () => {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+
+  // Ensure this runs only between 00:00 - 00:09 (first 10 minutes of the day)
+  if (currentHours === 0 && currentMinutes < 10) {
+    menuDb.serialize(() => {
+      // Delete all existing ratings
+      menuDb.run(`DELETE FROM ratings`, (err) => {
+        if (err) {
+          console.error('Error deleting ratings:', err);
+          return;
+        }
+        console.log('Ratings table cleared.');
+
+        // Reinsert the 4 default meals with zero values
+        menuDb.run(
+          `INSERT INTO ratings (meal, average_rating, rating_count) VALUES 
+           ('breakfast', 0, 0), 
+           ('lunch', 0, 0), 
+           ('snacks', 0, 0), 
+           ('dinner', 0, 0)`,
+          (err) => {
+            if (err) {
+              console.error('Error inserting default ratings:', err);
+            } else {
+              console.log('Ratings reset successfully.');
+            }
+          }
+        );
+      });
+    });
+  }
+};
+
+// Run every 10 minutes to check if it's midnight
+resetRatings();
+setInterval(resetRatings, 10 * 60 * 1000);
+
 // API endpoint for fetching menu for a specific day and week
 app.get('/api/menu/:day/:week', (req, res) => {
   const { day, week } = req.params;

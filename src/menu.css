@@ -1,49 +1,73 @@
-
 .menu-container {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 20px; 
-  }
-  
-  .meal-section {
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f4f4f4;
-    color: black; 
-    transition: background 0.3s ease-in-out;
-  }
-  
-  .meal-section h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .meal-timing {
-    font-size: 18px;
-    margin-bottom: 15px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  ul li {
-    font-size: 18px;
-    margin: 5px 0;
-  }
-  
-  
-  .meal-section:hover {
-    background-color: #e9ecef;
-  }
-  
-  @media (max-width: 768px) {
-    .menu-container {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 20px; 
+}
+
+.meal-section {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Text styling */
+.meal-section h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.meal-timing {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+/* Backgrounds for each meal type */
+.meal-section.breakfast {
+  color: #4E342E;
+  background-image: url('./breakfast.jpg');
+}
+
+.meal-section.lunch {
+  background-image: url('./lunch.jpg');
+  color: #ddf5b1;
+}
+
+.meal-section.snacks {
+  background-image: url('./snacks.jpg');
+  color: #F5E1C8;
+}
+
+.meal-section.dinner {
+  background-image: url('./dinner.jpg');
+  color: #FAF3E0;
+}
+
+/* Hover effect */
+.meal-section:hover {
+  transform: scale(1.01);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .menu-container {
       grid-template-columns: 1fr; 
-    }
   }
-  
+}

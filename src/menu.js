@@ -33,7 +33,7 @@ function Menu({ day, week }) {
   return (
     <div className="menu-container">
       {menuItems.map((mealType) => (
-        <div key={mealType.meal} className="meal-section">
+        <div key={mealType.meal} className={`meal-section ${mealType.meal.toLowerCase()}`}>
           <h3>{mealType.meal.toUpperCase()}</h3>
           <div className="meal-timing">
             {getMealTiming(mealType.meal)}
