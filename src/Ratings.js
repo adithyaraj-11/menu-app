@@ -9,6 +9,15 @@ const mealTimes = {
   dinner: [19 * 60 + 15, 20 * 60 + 45],
 };
 
+const toCamelCase = (str) => {
+  return str
+    .toLowerCase()
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (match, index) =>
+      index === 0 ? match.toLowerCase() : match.toUpperCase()
+    )
+    .replace(/\s+/g, '');
+};
+
 function Ratings() {
   const [ratings, setRatings] = useState([]);
   const [userRatings, setUserRatings] = useState({});
@@ -126,7 +135,7 @@ function Ratings() {
             <tbody>
               {ratings.map((meal, index) => (
                 <tr key={index}>
-                  <td>{meal.meal}</td>
+                  <td>toCamelCase({meal.meal})</td>
                   <td>{renderStars(meal.average_rating)}</td>
                   <td>{meal.rating_count}</td>
                   <td>{renderUserStars(meal.meal, meal.meal_type)}</td>
