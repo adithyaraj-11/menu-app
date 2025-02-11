@@ -1,4 +1,0 @@
-express
-sqlite3
-cors
-web-vitals  
