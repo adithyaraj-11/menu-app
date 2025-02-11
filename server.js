@@ -22,14 +22,30 @@ menuDb.run(`
     average_rating REAL,
     rating_count INTEGER
   );
+`, (err) => {
+  if (err) {
+    console.error("Error creating ratings table:", err);
+    return;
+  }
 
-  INSERT OR IGNORE INTO ratings (meal, average_rating, rating_count) VALUES
-  ('breakfast', 0, 0),
-  ('lunch', 0, 0),
-  ('snacks', 0, 0),
-  ('dinner', 0, 0);
-`);
+  // Now check if the table is empty
+  menuDb.get(`SELECT COUNT(*) AS count FROM ratings`, (err, row) => {
+    if (err) {
+      console.error("Error checking ratings table:", err);
+      return;
+    }
 
+    if (row.count === 0) {
+      menuDb.run(`
+        INSERT INTO ratings (meal, average_rating, rating_count) VALUES
+        ('breakfast', 0, 0),
+        ('lunch', 0, 0),
+        ('snacks', 0, 0),
+        ('dinner', 0, 0);
+      `);
+    }
+  });
+});
 
 menuDb.run(`CREATE TABLE IF NOT EXISTS comments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
