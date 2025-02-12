@@ -18,7 +18,7 @@ function Comments() {
 
         const formattedData = data.map(comment => ({
           ...comment,
-          date: new Date(comment.date).toLocaleDateString('en-IN'),
+          date: comment.date.split('-').reverse().join('/')
         }));
 
         setAllComments(formattedData);
