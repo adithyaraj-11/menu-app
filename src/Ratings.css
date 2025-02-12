@@ -78,6 +78,12 @@
   transition: color 0.2s;
 }
 
+.avg .stars span {
+  pointer-events: none;
+  cursor: default;
+  transition: none; /* Removes hover transition */
+}
+
 .stars span:hover {
   color: gold; /* Hover effect */
 }

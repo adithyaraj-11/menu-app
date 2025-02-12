@@ -18,7 +18,22 @@ function Menu({ day, week }) {
           throw new Error('Failed to fetch menu');
         }
         const data = await response.json();
-        setMenuItems(data);
+
+        const ratingsResponse = await fetch(`https://menu-app-553s.onrender.com/api/ratings`);
+         if (!ratingsResponse.ok) {
+        throw new Error('Failed to fetch ratings');
+        }
+        const ratingsData = await ratingsResponse.json();
+
+        const menuWithRatings = data.map(meal => {
+          const rating = ratingsData.find(r => r.meal.toLowerCase() === meal.meal.toLowerCase());
+          return {
+            ...meal,
+            average_rating: rating && rating.average_rating > 0 ? rating.average_rating : null
+          };
+        });
+
+        setMenuItems(menuWithRatings);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -34,7 +49,10 @@ function Menu({ day, week }) {
     <div className="menu-container">
       {menuItems.map((mealType) => (
         <div key={mealType.meal} className={`meal-section ${mealType.meal.toLowerCase()}`}>
-          <h3>{mealType.meal.toUpperCase()}</h3>
+          <h3>
+          {mealType.meal.toUpperCase()} 
+          {mealType.average_rating !== null ? ` (${mealType.average_rating.toFixed(1)} ★)` : ''}
+        </h3>
           <div className="meal-timing">
             {getMealTiming(mealType.meal)}
           </div>
