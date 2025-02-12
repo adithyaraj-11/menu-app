@@ -44,7 +44,7 @@ function Comments() {
               comment: newComment,
               date: `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`
             };
-            
+
             setAllComments(prevComments => [...prevComments, newCommentData]);
 
             setTimeout(() => setMessage(''), 3000);
@@ -118,11 +118,11 @@ function Comments() {
           <input
             id="filterDate"
             type="date"
-            value={filterDate.split('/').join('-')}
+            value={filterDate ? filterDate.split('/').reverse().join('-') : ''}
             onChange={(e) => {
-              const date = new Date(e.target.value);
-              const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
-              setFilterDate(formattedDate);
+              if (!e.target.value) return;
+              const [year, month, day] = e.target.value.split('-');
+              setFilterDate(`${year}/${month}/${day}`);
             }}
           />
         </div>
