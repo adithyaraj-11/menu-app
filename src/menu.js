@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
 import './menu.css';
 
 function Menu({ day, week }) {
@@ -13,25 +14,40 @@ function Menu({ day, week }) {
 
     async function fetchMenu() {
       try {
-        const response = await fetch(`https://menu-app-553s.onrender.com/api/menu/${day}/${week}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch menu');
-        }
-        const data = await response.json();
+        // Fetch menu items from Supabase
+        const { data: menuData, error: menuError } = await supabase
+          .from("menu")
+          .select("meal, item")
+          .eq("day", day)
+          .eq("week", week);
 
-        const ratingsResponse = await fetch(`https://menu-app-553s.onrender.com/api/ratings`);
-         if (!ratingsResponse.ok) {
-        throw new Error('Failed to fetch ratings');
-        }
-        const ratingsData = await ratingsResponse.json();
+        if (menuError) throw menuError;
 
-        const menuWithRatings = data.map(meal => {
-          const rating = ratingsData.find(r => r.meal.toLowerCase() === meal.meal.toLowerCase());
-          return {
-            ...meal,
-            average_rating: rating && rating.average_rating > 0 ? rating.average_rating : null
-          };
-        });
+        // Fetch ratings from Supabase
+        const { data: ratingsData, error: ratingsError } = await supabase
+          .from("ratings")
+          .select("meal, average_rating");
+
+        if (ratingsError) throw ratingsError;
+
+        // Merge ratings into menu items
+        const menuWithRatings = menuData.reduce((acc, { meal, item }) => {
+          let mealEntry = acc.find(m => m.meal.toLowerCase() === meal.toLowerCase());
+
+          if (!mealEntry) {
+            mealEntry = { meal, items: [], average_rating: null };
+            acc.push(mealEntry);
+          }
+
+          mealEntry.items.push(item);
+
+          const rating = ratingsData.find(r => r.meal.toLowerCase() === meal.toLowerCase());
+          if (rating) {
+            mealEntry.average_rating = rating.average_rating > 0 ? rating.average_rating : null;
+          }
+
+          return acc;
+        }, []);
 
         setMenuItems(menuWithRatings);
         setLoading(false);
@@ -50,14 +66,12 @@ function Menu({ day, week }) {
       {menuItems.map((mealType) => (
         <div key={mealType.meal} className={`meal-section ${mealType.meal.toLowerCase()}`}>
           <h3>
-          {mealType.meal.toUpperCase()} 
-          {mealType.average_rating !== null ? ` (${mealType.average_rating.toFixed(1)} ★)` : ''}
-        </h3>
-          <div className="meal-timing">
-            {getMealTiming(mealType.meal)}
-          </div>
+            {mealType.meal.toUpperCase()} 
+            {mealType.average_rating !== null ? ` (${mealType.average_rating.toFixed(1)} ★)` : ''}
+          </h3>
+          <div className="meal-timing">{getMealTiming(mealType.meal)}</div>
           <ul>
-            {mealType.items.split(', ').map((item, index) => (
+            {mealType.items.map((item, index) => (
               <li key={index}>{item}</li>
             ))}
           </ul>

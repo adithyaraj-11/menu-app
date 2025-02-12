@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Ratings.css'; // Ensure you have the necessary styles
+import { supabase } from './supabaseClient'; // Import Supabase client
+import './Ratings.css';
 
 const mealTimes = {
   breakfast: [7 * 60 + 15, 9 * 60 + 45],
@@ -7,7 +8,6 @@ const mealTimes = {
   snacks: [17 * 60 + 30, 19 * 60 + 30],
   dinner: [19 * 60 + 15, 21 * 60 + 45],
 };
-
 
 const toPascalCase = (str) => str.replace(/\b\w/g, (char) => char.toUpperCase()).replace(/\s+/g, '');
 
@@ -17,21 +17,51 @@ function Ratings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://menu-app-553s.onrender.com/api/ratings')
-      .then(response => response.json())
-      .then(data => {
-        setRatings(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching ratings:', error);
-        setLoading(false);
-      });
+    fetchRatings();
+    loadUserRatings();
   
-    // Load user ratings from localStorage
+    const clearLocalStorageAtMidnight = () => {
+      const today = new Date().toISOString().split("T")[0];
+      const lastCleared = localStorage.getItem("lastCleared");
+  
+      if (lastCleared !== today) {
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith("rated_")) {
+            localStorage.removeItem(key);
+          }
+        });
+        localStorage.setItem("lastCleared", today);
+      }
+    };
+  
+    clearLocalStorageAtMidnight();
+  
+    const now = new Date();
+    const millisUntilMidnight = 
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0) - now;
+  
+    const timer = setTimeout(() => {
+      clearLocalStorageAtMidnight();
+      setInterval(clearLocalStorageAtMidnight, 24 * 60 * 60 * 1000);
+    }, millisUntilMidnight);
+  
+    return () => clearTimeout(timer);
+  }, []);
+
+  const fetchRatings = async () => {
+    const { data, error } = await supabase.from('ratings').select('*').order('meal');
+    if (error) {
+      console.error('Error fetching ratings:', error);
+    } else {
+      setRatings(data);
+      setLoading(false);
+    }
+  };
+
+  const loadUserRatings = () => {
     const today = new Date().toISOString().split("T")[0];
     const storedRatings = {};
-    Object.keys(localStorage).forEach(key => {
+    Object.keys(localStorage).forEach((key) => {
       if (key.startsWith("rated_")) {
         const storedData = JSON.parse(localStorage.getItem(key));
         if (storedData && storedData.date === today) {
@@ -39,42 +69,27 @@ function Ratings() {
         }
       }
     });
-  
     setUserRatings(storedRatings);
-  }, []);
-
+  };
 
   const isWithinTimeRange = (mealType) => {
-    if (!mealType || !(mealType in mealTimes)) {
-      console.error(`Invalid meal type: ${mealType}`);
-      return false;
-    }
-
+    if (!mealType || !(mealType in mealTimes)) return false;
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
     return currentTime >= mealTimes[mealType][0] && currentTime <= mealTimes[mealType][1];
   };
 
   const handleStarClick = (meal, rating) => {
-    if (!meal) {
-      console.error("Meal type is undefined");
-      return;
-    }
-
+    if (!meal) return;
     if (localStorage.getItem(`rated_${meal}`)) {
       alert(`You have already rated ${meal}.`);
       return;
     }
-
     if (!isWithinTimeRange(meal)) {
       alert(`You can rate ${meal} only during its respective time.`);
       return;
     }
-
-    setUserRatings(prevState => ({
-      ...prevState,
-      [meal]: rating
-    }));
+    setUserRatings((prev) => ({ ...prev, [meal]: rating }));
   };
 
   const renderStars = (rating) => {
@@ -118,10 +133,10 @@ function Ratings() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const today = new Date().toISOString().split("T")[0];
 
-    Object.keys(localStorage).forEach(key => {
+    Object.keys(localStorage).forEach((key) => {
       if (key.startsWith("rated_")) {
         const storedData = JSON.parse(localStorage.getItem(key));
         if (!storedData || storedData.date !== today) {
@@ -131,27 +146,35 @@ function Ratings() {
     });
 
     const newRatings = Object.entries(userRatings).filter(([meal]) => !localStorage.getItem(`rated_${meal}`));
+    if (newRatings.length === 0) return;
 
-    if (newRatings.length === 0) {
-      return;
+    for (const [meal, newRating] of newRatings) {
+      const { data, error } = await supabase.from('ratings').select('average_rating, rating_count').eq('meal', meal).single();
+
+      if (error) {
+        console.error('Error fetching meal rating:', error);
+        continue;
+      }
+
+      const { average_rating, rating_count } = data || { average_rating: 0, rating_count: 0 };
+      const newTotalRating = average_rating * rating_count + newRating;
+      const newRatingCount = rating_count + 1;
+      const newAverageRating = newTotalRating / newRatingCount;
+
+      const { error: updateError } = await supabase
+        .from('ratings')
+        .update({ average_rating: newAverageRating, rating_count: newRatingCount })
+        .eq('meal', meal);
+
+      if (updateError) {
+        console.error('Error updating rating:', updateError);
+        continue;
+      }
+
+      localStorage.setItem(`rated_${meal}`, JSON.stringify({ date: today, rating: newRating }));
     }
 
-    newRatings.forEach(([meal, rating]) => {
-      fetch('https://menu-app-553s.onrender.com/api/ratings/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ meal, newRating: rating }),
-      })
-        .then(response => response.json())
-        .then(() => {
-          localStorage.setItem(`rated_${meal}`, JSON.stringify({ date: today, rating }));
-          fetch('https://menu-app-553s.onrender.com/api/ratings')
-            .then(response => response.json())
-            .then(data => setRatings(data))
-            .catch(error => console.error('Error fetching updated ratings:', error));
-        })
-        .catch(error => console.error('Error updating ratings:', error));
-    });
+    fetchRatings();
   };
 
   return (

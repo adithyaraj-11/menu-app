@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient'; // Import Supabase client
 import './Comments.css';
 
 function Comments() {
@@ -11,56 +12,46 @@ function Comments() {
   const [filterDate, setFilterDate] = useState('');
 
   useEffect(() => {
-    fetch('https://menu-app-553s.onrender.com/api/comments')
-      .then(response => response.json())
-      .then(data => {
-        setAllComments(data);
-        setFilteredComments(data);
-      })
-      .catch(error => console.error('Error fetching comments:', error));
+    fetchComments();
   }, []);
 
   useEffect(() => {
     filterComments();
   }, [allComments, filterMeal, filterDate]);
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (meal && newComment.trim()) {
-      fetch('https://menu-app-553s.onrender.com/api/comments/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ meal, comment: newComment }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            setMessage('Comment submitted successfully!');
-            setNewComment('');
-
-            const now = new Date();
-            const newCommentData = {
-              meal,
-              comment: newComment,
-              date: `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`
-            };
-
-            setAllComments(prevComments => [...prevComments, newCommentData]);
-
-            setTimeout(() => setMessage(''), 3000);
-          } else {
-            setMessage('Failed to submit comment. Please try again.');
-          }
-        })
-        .catch(error => {
-          console.error('Error adding comment:', error);
-          setMessage('Failed to submit comment. Please try again.');
-          setTimeout(() => setMessage(''), 3000);
-        });
+  const fetchComments = async () => {
+    const { data, error } = await supabase.from('comments').select('*').order('date', { ascending: false });
+    if (error) {
+      console.error('Error fetching comments:', error);
     } else {
+      setAllComments(data);
+      setFilteredComments(data);
+    }
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!meal || !newComment.trim()) {
       setMessage('Please select a meal and write a comment.');
       setTimeout(() => setMessage(''), 3000);
+      return;
     }
+
+    const now = new Date();
+    const commentDate = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
+
+    const { error } = await supabase.from('comments').insert([{ meal, comment: newComment, date: commentDate }]);
+
+    if (error) {
+      console.error('Error adding comment:', error);
+      setMessage('Failed to submit comment. Please try again.');
+    } else {
+      setMessage('Comment submitted successfully!');
+      setNewComment('');
+      setAllComments((prevComments) => [...prevComments, { meal, comment: newComment, date: commentDate }]);
+    }
+
+    setTimeout(() => setMessage(''), 3000);
   };
 
   const filterComments = () => {
