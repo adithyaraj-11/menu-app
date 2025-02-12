@@ -27,6 +27,24 @@ function Comments() {
       .catch(error => console.error('Error fetching comments:', error));
   }, []);
 
+  const filterComments = () => {
+    let filtered = allComments;
+  
+    if (filterMeal) {
+      filtered = filtered.filter(comment => comment.meal === filterMeal);
+    }
+  
+    if (filterDate) {
+      filtered = filtered.filter(comment => {
+        const commentDate = new Date(comment.date).toLocaleDateString('en-IN');
+        console.log("Comparing:", commentDate, "with", filterDate);
+        return commentDate === filterDate;
+      });
+    }
+  
+    setFilteredComments(filtered);
+  };
+  
   useEffect(() => {
     filterComments();
   }, [allComments, filterMeal, filterDate]);
@@ -69,16 +87,7 @@ function Comments() {
     }
   };
 
-  const filterComments = () => {
-    let filtered = allComments;
-    if (filterMeal) {
-      filtered = filtered.filter(comment => comment.meal === filterMeal);
-    }
-    if (filterDate) {
-      filtered = filtered.filter(comment => comment.date === filterDate);
-    }
-    setFilteredComments(filtered);
-  };
+  
 
   return (
     <div className="comments">
@@ -122,11 +131,14 @@ function Comments() {
         <div className="date-filter">
           <label htmlFor="filterDate">Filter by Date: </label>
           <input
-            id="filterDate"
-            type="date"
-            value={filterDate}
-            onChange={(e) => setFilterDate(new Date(e.target.value).toLocaleDateString('en-IN'))}
-          />
+  id="filterDate"
+  type="date"
+  value={filterDate ? filterDate.split('/').reverse().join('-') : ''} // Convert DD/MM/YYYY to YYYY-MM-DD
+  onChange={(e) => {
+    const [year, month, day] = e.target.value.split('-');
+    setFilterDate(`${day}/${month}/${year}`); // Convert YYYY-MM-DD to DD/MM/YYYY
+  }}
+/>
         </div>
       </div>
 

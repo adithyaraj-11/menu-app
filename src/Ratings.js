@@ -3,10 +3,10 @@ import './Ratings.css'; // Ensure you have the necessary styles
 
 
 const mealTimes = {
-  breakfast: [7 * 60 + 15, 8 * 60 + 45],
-  lunch: [11 * 60 + 45, 14 * 60 + 30],
-  snacks: [17 * 60 + 30, 18 * 60 + 30],
-  dinner: [19 * 60 + 15, 20 * 60 + 45],
+  breakfast: [7 * 60 + 15, 9 * 60 + 45],
+  lunch: [11 * 60 + 45, 15 * 60 + 30],
+  snacks: [17 * 60 + 30, 19 * 60 + 30],
+  dinner: [19 * 60 + 15, 21 * 60 + 45],
 };
 
 const toPascalCase = (str) => str.replace(/\b\w/g, (char) => char.toUpperCase()).replace(/\s+/g, '');
