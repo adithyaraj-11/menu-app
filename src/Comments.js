@@ -36,7 +36,7 @@ function Comments() {
   
     if (filterDate) {
       filtered = filtered.filter(comment => {
-        const commentDate = new Date(comment.date).toLocaleDateString('en-IN');
+        const commentDate = new Date(comment.date);
         console.log("Comparing:", commentDate, "with", filterDate);
         return commentDate === filterDate;
       });
