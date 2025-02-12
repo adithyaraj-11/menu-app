@@ -16,10 +16,13 @@ function Comments() {
       .then(data => {
         console.log('Fetched data:', data);
 
-        const formattedData = data.map(comment => ({
-          ...comment,
-          date: new Date(comment.date).toISOString().split('T')[0], 
-        }));
+        const formattedData = data.map(comment => {
+          const [day, month, year] = comment.date.split('/'); // Extract DD, MM, YYYY
+          return {
+            ...comment,
+            date: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}` // Convert to YYYY-MM-DD
+          };
+        });
 
         setAllComments(formattedData);
         setFilteredComments(formattedData);
