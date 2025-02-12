@@ -51,7 +51,7 @@ menuDb.run(`CREATE TABLE IF NOT EXISTS comments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   meal TEXT NOT NULL,
   comment TEXT NOT NULL,
-  date TEXT NOT NULL DEFAULT (strftime('%d/%m/%Y', 'now', 'localtime'))
+  date TEXT NOT NULL DEFAULT (strftime('%Y/%m/%d', 'now', 'localtime'))
 )`);
 
 
