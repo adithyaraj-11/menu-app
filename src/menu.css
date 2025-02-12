@@ -65,6 +65,16 @@ ul li {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  color: gray;
+  font-weight: bold;
+  text-align: center;
+}
+
 /* Responsive layout */
 @media (max-width: 768px) {
   .menu-container {

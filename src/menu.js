@@ -42,8 +42,8 @@ function Menu({ day, week }) {
     }
   }, [day, week]);
 
-  if (loading) return <div>Loading menu...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className='loading'><div>Loading menu...</div></div>;
+  if (error) return <div className='loading'><div>Error: {error}</div></div>;
 
   return (
     <div className="menu-container">

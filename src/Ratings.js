@@ -8,21 +8,29 @@ const mealTimes = {
   dinner: [19 * 60 + 15, 21 * 60 + 45],
 };
 
+
 const toPascalCase = (str) => str.replace(/\b\w/g, (char) => char.toUpperCase()).replace(/\s+/g, '');
 
 function Ratings() {
   const [ratings, setRatings] = useState([]);
   const [userRatings, setUserRatings] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('https://menu-app-553s.onrender.com/api/ratings')
       .then(response => response.json())
-      .then(data => setRatings(data))
-      .catch(error => console.error('Error fetching ratings:', error));
-
+      .then(data => {
+        setRatings(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching ratings:', error);
+        setLoading(false);
+      });
+  
+    // Load user ratings from localStorage
     const today = new Date().toISOString().split("T")[0];
     const storedRatings = {};
-
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith("rated_")) {
         const storedData = JSON.parse(localStorage.getItem(key));
@@ -31,9 +39,10 @@ function Ratings() {
         }
       }
     });
-
+  
     setUserRatings(storedRatings);
   }, []);
+
 
   const isWithinTimeRange = (mealType) => {
     if (!mealType || !(mealType in mealTimes)) {
@@ -148,7 +157,9 @@ function Ratings() {
   return (
     <div className="ratings">
       <h2>Daily Ratings</h2>
-      {ratings.length === 0 ? (
+      {loading ? (
+        <div className="loading">Loading ratings...</div>
+      ) : ratings.length === 0 ? (
         <p>No ratings available</p>
       ) : (
         <div className="table-container">
