@@ -49,11 +49,13 @@ function Ratings() {
   }, []);
 
   const fetchRatings = async () => {
-    const { data, error } = await supabase.from('ratings').select('*').order('meal');
+    const { data, error } = await supabase.from('ratings').select('*');
     if (error) {
       console.error('Error fetching ratings:', error);
     } else {
-      setRatings(data);
+      const mealOrder = ["breakfast", "lunch", "snacks", "dinner"];
+      const sortedData = data.sort((a, b) => mealOrder.indexOf(a.meal) - mealOrder.indexOf(b.meal));
+      setRatings(sortedData);
       setLoading(false);
     }
   };
