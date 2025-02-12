@@ -45,9 +45,6 @@ function Ratings() {
       alert(`You can rate ${meal} only during its respective time.`);
       return;
     }
-  
-    console.log(`Meal: ${meal}, Rating: ${rating}`); // Debugging log
-  
     setUserRatings(prevState => ({
       ...prevState,
       [meal]: rating
@@ -78,8 +75,6 @@ function Ratings() {
 
   const renderUserStars = (meal) => {
     const userRating = userRatings[meal] || 0;
-    console.log(`Rendering stars for ${meal}, User Rating: ${userRating}`);
-  
     return (
       <span className="stars">
         {Array.from({ length: 5 }, (_, index) => (

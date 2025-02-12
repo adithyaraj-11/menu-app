@@ -14,18 +14,8 @@ function Comments() {
     fetch('https://menu-app-553s.onrender.com/api/comments')
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data);
-
-        const formattedData = data.map(comment => {
-          const [day, month, year] = comment.date.split('/'); // Extract DD, MM, YYYY
-          return {
-            ...comment,
-            date: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}` // Convert to YYYY-MM-DD
-          };
-        });
-
-        setAllComments(formattedData);
-        setFilteredComments(formattedData);
+        setAllComments(data);
+        setFilteredComments(data);
       })
       .catch(error => console.error('Error fetching comments:', error));
   }, []);
@@ -48,12 +38,13 @@ function Comments() {
             setMessage('Comment submitted successfully!');
             setNewComment('');
 
+            const now = new Date();
             const newCommentData = {
               meal,
               comment: newComment,
-              date: new Date().toLocaleDateString('en-IN'),
+              date: `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`
             };
-
+            
             setAllComments(prevComments => [...prevComments, newCommentData]);
 
             setTimeout(() => setMessage(''), 3000);
@@ -127,8 +118,12 @@ function Comments() {
           <input
             id="filterDate"
             type="date"
-            value={filterDate}
-            onChange={(e) => setFilterDate(new Date(e.target.value).toLocaleDateString('en-IN'))}
+            value={filterDate.split('/').join('-')}
+            onChange={(e) => {
+              const date = new Date(e.target.value);
+              const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+              setFilterDate(formattedDate);
+            }}
           />
         </div>
       </div>
