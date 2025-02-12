@@ -144,7 +144,7 @@ function Comments() {
               {filteredComments.length > 0 ? (
                 filteredComments.map((comment, index) => (
                   <tr key={index}>
-                    <td>{comment.date}</td>
+                    <td>{comment.date.split('/').reverse().join('/')}</td>
                     <td>{comment.meal}</td>
                     <td>{comment.comment}</td>
                   </tr>
