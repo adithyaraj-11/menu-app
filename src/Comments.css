@@ -11,15 +11,15 @@
 }
 
 /* Dropdowns (Meal Select and Filter) */
-.meal-select {
+.meal-select, .filters {
   margin-top: 10px;
 }
 
-.meal-select label {
+.meal-select label, .meal-filter label, .date-filter label {
   margin-right: 10px;
 }
 
-.meal-select select {
+.meal-select select, .meal-filter select, .date-filter input {
   padding: 8px;
   font-size: 14px;
   border: 1px solid #ccc;
@@ -55,14 +55,12 @@ textarea {
   height: 100px;
   padding: 10px;
   margin-top: 10px;
-  margin-right: 50px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
 button {
-  display: inline-block;
   margin-top: 10px;
   padding: 8px 16px;
   background-color: #4CAF50;
@@ -81,63 +79,49 @@ button:hover {
 /* Filters */
 .filters {
   margin-top: 20px;
-}
-
-.meal-filter {
-  margin-bottom: 10px;
-}
-
-.meal-filter label {
-  margin-right: 10px;
-}
-
-input[type="date"] {
-  margin-right: 10px;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* Comments Table */
 .comments-table {
   margin-top: 20px;
   width: 100%;
-  overflow-x: auto;
   border: 1px solid #ddd;
   border-radius: 5px;
 }
 
-/* Table */
+/* Table Header */
 .comments-table table {
   width: 100%;
-  overflow: hidden;
   border-collapse: collapse;
 }
 
-/* Table Header */
+.comments-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #f4f4f4;
+  z-index: 1;
+}
+
 .comments-table th,
 .comments-table td {
   padding: 8px 12px;
   text-align: left;
   border: 1px solid #ddd;
-}
-
-.comments-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Scrollable Table Body */
-.comments-table tbody {
-  max-height: 200px;
+.table-body {
+  display: block;
+  max-height: 200px; /* Limit to show only 5 rows */
   overflow-y: auto;
-  display: table-row-group;
 }
 
-
-.comments-table thead,
-.comments-table tbody tr {
+.table-body table {
   display: table;
   width: 100%;
   table-layout: fixed;
@@ -146,14 +130,13 @@ input[type="date"] {
 /* Responsive */
 @media (max-width: 768px) {
   .filters {
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
   .meal-filter, .date-filter {
-    width: 90%; /* Reduce width for smaller screens */
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
