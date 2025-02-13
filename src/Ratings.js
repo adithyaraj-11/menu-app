@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient'; // Import Supabase client
+import { supabase } from './supabaseClient';
 import './Ratings.css';
 
-const mealTimes = {
+const MEAL_TIMES = {
   breakfast: [7 * 60 + 15, 9 * 60 + 45],
   lunch: [11 * 60 + 45, 15 * 60 + 30],
   snacks: [17 * 60 + 30, 19 * 60 + 30],
@@ -17,36 +17,20 @@ function Ratings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    clearLocalStorageIfNewDay();
     fetchRatings();
     loadUserRatings();
-  
-    const clearLocalStorageAtMidnight = () => {
-      const today = new Date().toISOString().split("T")[0];
-      const lastCleared = localStorage.getItem("lastCleared");
-  
-      if (lastCleared !== today) {
-        Object.keys(localStorage).forEach((key) => {
-          if (key.startsWith("rated_")) {
-            localStorage.removeItem(key);
-          }
-        });
-        localStorage.setItem("lastCleared", today);
-      }
-    };
-  
-    clearLocalStorageAtMidnight();
-  
-    const now = new Date();
-    const millisUntilMidnight = 
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0) - now;
-  
-    const timer = setTimeout(() => {
-      clearLocalStorageAtMidnight();
-      setInterval(clearLocalStorageAtMidnight, 24 * 60 * 60 * 1000);
-    }, millisUntilMidnight);
-  
-    return () => clearTimeout(timer);
   }, []);
+
+  const clearLocalStorageIfNewDay = () => {
+    const today = new Date().toLocaleDateString('en-CA');
+    if (localStorage.getItem("lastCleared") !== today) {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("rated_")) localStorage.removeItem(key);
+      });
+      localStorage.setItem("lastCleared", today);
+    }
+  };
 
   const fetchRatings = async () => {
     const { data, error } = await supabase.from('ratings').select('*');
@@ -54,35 +38,35 @@ function Ratings() {
       console.error('Error fetching ratings:', error);
     } else {
       const mealOrder = ["breakfast", "lunch", "snacks", "dinner"];
-      const sortedData = data.sort((a, b) => mealOrder.indexOf(a.meal) - mealOrder.indexOf(b.meal));
-      setRatings(sortedData);
-      setLoading(false);
+      setRatings(data.sort((a, b) => mealOrder.indexOf(a.meal) - mealOrder.indexOf(b.meal)));
     }
+    setLoading(false);
   };
 
   const loadUserRatings = () => {
     const today = new Date().toISOString().split("T")[0];
     const storedRatings = {};
+
     Object.keys(localStorage).forEach((key) => {
       if (key.startsWith("rated_")) {
         const storedData = JSON.parse(localStorage.getItem(key));
-        if (storedData && storedData.date === today) {
+        if (storedData?.date === today) {
           storedRatings[key.replace("rated_", "")] = storedData.rating;
         }
       }
     });
+
     setUserRatings(storedRatings);
   };
 
-  const isWithinTimeRange = (mealType) => {
-    if (!mealType || !(mealType in mealTimes)) return false;
+  const isWithinTimeRange = (meal) => {
+    if (!(meal in MEAL_TIMES)) return false;
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
-    return currentTime >= mealTimes[mealType][0] && currentTime <= mealTimes[mealType][1];
+    return currentTime >= MEAL_TIMES[meal][0] && currentTime <= MEAL_TIMES[meal][1];
   };
 
   const handleStarClick = (meal, rating) => {
-    if (!meal) return;
     if (localStorage.getItem(`rated_${meal}`)) {
       alert(`You have already rated ${meal}.`);
       return;
@@ -95,20 +79,12 @@ function Ratings() {
   };
 
   const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const halfStars = Math.ceil(rating - fullStars);
-    const emptyStars = 5 - fullStars - halfStars;
-
     return (
       <span className="stars">
-        {Array(fullStars).fill('★').map((star, index) => (
-          <span key={`full-${index}`} className="full-star">{star}</span>
-        ))}
-        {Array(halfStars).fill('☆').map((star, index) => (
-          <span key={`half-${index}`} className="half-star">{star}</span>
-        ))}
-        {Array(emptyStars).fill('☆').map((star, index) => (
-          <span key={`empty-${index}`} className="empty-star">{star}</span>
+        {[...Array(5)].map((_, index) => (
+          <span key={index} className={index < rating ? "full-star" : "empty-star"}>
+            {index < rating ? '★' : '☆'}
+          </span>
         ))}
         <span className="rating-number"> ({rating.toFixed(1)})</span>
       </span>
@@ -121,7 +97,7 @@ function Ratings() {
 
     return (
       <span className="stars">
-        {Array.from({ length: 5 }, (_, index) => (
+        {[...Array(5)].map((_, index) => (
           <span
             key={index}
             className={index < userRating ? "full-star" : "empty-star"}
@@ -138,27 +114,17 @@ function Ratings() {
   const handleSubmit = async () => {
     const today = new Date().toISOString().split("T")[0];
 
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("rated_")) {
-        const storedData = JSON.parse(localStorage.getItem(key));
-        if (!storedData || storedData.date !== today) {
-          localStorage.removeItem(key);
-        }
-      }
-    });
-
     const newRatings = Object.entries(userRatings).filter(([meal]) => !localStorage.getItem(`rated_${meal}`));
     if (newRatings.length === 0) return;
 
     for (const [meal, newRating] of newRatings) {
       const { data, error } = await supabase.from('ratings').select('average_rating, rating_count').eq('meal', meal).single();
-
       if (error) {
         console.error('Error fetching meal rating:', error);
         continue;
       }
 
-      const { average_rating, rating_count } = data || { average_rating: 0, rating_count: 0 };
+      const { average_rating = 0, rating_count = 0 } = data;
       const newTotalRating = average_rating * rating_count + newRating;
       const newRatingCount = rating_count + 1;
       const newAverageRating = newTotalRating / newRatingCount;
