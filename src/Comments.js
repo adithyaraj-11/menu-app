@@ -56,12 +56,16 @@ function Comments() {
 
   const filterComments = () => {
     let filtered = allComments;
+  
     if (filterMeal) {
       filtered = filtered.filter(comment => comment.meal === filterMeal);
     }
+  
     if (filterDate) {
-      filtered = filtered.filter(comment => comment.date === filterDate);
+      const formattedFilterDate = filterDate.replace(/-/g, '/'); // Convert to match stored format
+      filtered = filtered.filter(comment => comment.formatted_date === formattedFilterDate);
     }
+  
     setFilteredComments(filtered);
   };
 
