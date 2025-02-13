@@ -135,7 +135,7 @@ function Comments() {
               {filteredComments.length > 0 ? (
                 filteredComments.map((comment, index) => (
                   <tr key={index}>
-                    <td>{comment.date.split('/').reverse().join('/')}</td>
+                    <td>{new Date(comment.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                     <td>{comment.meal}</td>
                     <td>{comment.comment}</td>
                   </tr>

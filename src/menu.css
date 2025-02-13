@@ -40,23 +40,26 @@ ul li {
 
 /* Backgrounds for each meal type */
 .meal-section.breakfast {
-  color: #4E342E;
+  color: #4E342E; 
   background-image: url('./breakfast.jpg');
 }
 
 .meal-section.lunch {
   background-image: url('./lunch.jpg');
   color: #ddf5b1;
+  text-shadow: 1px 1px 2px #000; 
 }
 
 .meal-section.snacks {
   background-image: url('./snacks.jpg');
   color: #F5E1C8;
+  text-shadow: 1px 1px 2px #000; 
 }
 
 .meal-section.dinner {
   background-image: url('./dinner.jpg');
   color: #FAF3E0;
+  text-shadow: 1px 1px 2px #000; 
 }
 
 /* Hover effect */
