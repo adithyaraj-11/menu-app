@@ -1,52 +1,123 @@
-/* History container */
+/* History section */
 .history {
-    padding: 20px;
+    padding: 15px;
     font-family: Arial, sans-serif;
     min-height: 78vh;
+    text-align: center;
   }
   
+  /* Section heading */
   .history h2 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 1.5rem; /* Smaller heading */
+    margin-bottom: 15px;
+    color: #333;
   }
   
   /* Table container */
   .history-table-container {
     width: 100%;
-    max-height: 400px; /* Set a max height to enable scrolling */
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: auto; /* Ensure horizontal scrolling works too */
+    max-height: 300px; /* Reduce max height */
+    overflow-y: auto; /* Vertical scrolling */
+    overflow-x: auto; /* Horizontal scrolling */
   }
   
-  
-  /* Table styling */
+  /* Table styles */
   .history-table-container table {
     width: 100%;
+    min-width: 350px; /* Further reduce minimum width */
     border-collapse: collapse;
-    table-layout: fixed;
+    margin: 0 auto;
+    font-size: 0.8rem; /* Even smaller font */
   }
   
   .history-table-container th,
   .history-table-container td {
-    padding: 8px 12px;
-    text-align: left;
+    padding: 5px 6px; /* Reduce padding */
+    text-align: center;
     border: 1px solid #ddd;
   }
   
   .history-table-container th {
-    background-color: #f4f4f4;
+    background-color: #f2f2f2;
     font-weight: bold;
+    color: #555;
   }
   
-  /* Responsive table adjustments */
+  .history-table-container tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .history-table-container tr:hover {
+    background-color: #eaeaea;
+  }
+  
+  /* Star rating styles inside history */
+  .stars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem; /* Reduce star size */
+    gap: 2px;
+  }
+  
+  /* Rating number next to stars */
+  .rating-number {
+    font-size: 1rem; /* Adjusted for small screens */
+    color: #333;
+    margin-left: 4px;
+  }
+  
+  /* Star styles */
+  .full-star {
+    color: gold;
+  }
+  
+  .half-star {
+    position: relative;
+    display: inline-block;
+    color: lightgray;
+  }
+  
+  .half-star::before {
+    content: '★';
+    position: absolute;
+    width: 50%;
+    overflow: hidden;
+    color: gold;
+  }
+  
+  .empty-star {
+    color: lightgray;
+  }
+  
+  /* Mobile responsiveness */
   @media screen and (max-width: 768px) {
-    .history-table-container {
-      overflow-x: auto;
+    .history {
+      padding: 5px;
     }
-    
+  
+    .history-table-container {
+      max-height: 250px; /* Reduce height more */
+    }
+  
     .history-table-container table {
-      min-width: 600px; /* Prevent unnecessary horizontal scrolling */
+      width: 100%;
+      min-width: 300px; /* Make table as small as possible */
+      font-size: 0.7rem; /* Smallest readable font */
+    }
+  
+    .history-table-container th,
+    .history-table-container td {
+      padding: 4px 5px; /* Minimized padding */
+    }
+  
+    .stars {
+      font-size: 0.9rem; /* Smaller stars */
+    }
+  
+    .rating-number {
+      font-size: 0.7rem; /* Adjust number size */
+      margin-left: 2px;
     }
   }
   
