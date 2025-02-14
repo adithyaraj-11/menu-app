@@ -4,6 +4,7 @@ import logo from './react.svg';
 import Menu from './menu';
 import Ratings from './Ratings';
 import Comments from './Comments';
+import History from './History';
 import image1 from './week1&3.jpg';
 import image2 from './week2&4.jpg';
 
@@ -13,6 +14,7 @@ function App() {
   const [showImages, setShowImages] = useState(false);
   const [showRatings, setShowRatings] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for dropdown menu
 
   useEffect(() => {
@@ -36,6 +38,7 @@ function App() {
     setShowRatings(false);
     setShowComments(false);
     setMenuOpen(false);
+    setShowHistory(false);
   };
 
   const handleRatingsClick = () => {
@@ -43,6 +46,7 @@ function App() {
     setShowImages(false);
     setShowComments(false);
     setMenuOpen(false);
+    setShowHistory(false);
   };
 
   const handleCommentsClick = () => {
@@ -50,6 +54,15 @@ function App() {
     setShowImages(false);
     setShowRatings(false);
     setMenuOpen(false);
+    setShowHistory(false);
+  };
+
+  const handleHistoryClick = () => {
+    setShowComments(false);
+    setShowImages(false);
+    setShowRatings(false);
+    setMenuOpen(false);
+    setShowHistory(true);
   };
 
   const handleHomeClick = () => {
@@ -57,6 +70,7 @@ function App() {
     setShowRatings(false);
     setShowComments(false);
     setMenuOpen(false);
+    setShowHistory(false);
   };
 
   return (
@@ -65,18 +79,22 @@ function App() {
         <div className="logo">
           <h1>Mega Mess Menu</h1>
         </div>
-        <div className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </div>
+        <div 
+            className={`menu-toggle ${menuOpen ? 'open' : ''}`} 
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            ☰
+          </div>
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
           <a href="#home" onClick={handleHomeClick}>Home</a>
           <a href="#menu" onClick={handleMenuClick}>Menu</a>
           <a href="#ratings" onClick={handleRatingsClick}>Ratings</a>
           <a href="#comments" onClick={handleCommentsClick}>Comments</a>
+          <a href="#history" onClick={handleHistoryClick}>History</a>
         </div>
       </nav>
 
-      {!showImages && !showRatings && !showComments && (
+      {!showImages && !showRatings && !showComments && !showHistory && (
         <header className="App-header">
           <h2>Menu for {currentDay}</h2>
           <h4>Week {monthWeekNumber} of the month</h4>
@@ -91,8 +109,9 @@ function App() {
       )}
 
       {!showImages && showRatings && <Ratings />}
-      {!showImages && !showRatings && !showComments && <Menu day={currentDay} week={monthWeekNumber} />}
+      {!showImages && !showRatings && !showComments && !showHistory && <Menu day={currentDay} week={monthWeekNumber} />}
       {showComments && <Comments />}
+      {showHistory && <History />}
 
       <footer className="footer">
       Developed with 

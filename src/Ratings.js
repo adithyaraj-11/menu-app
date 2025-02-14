@@ -79,17 +79,25 @@ function Ratings() {
   };
 
   const renderStars = (rating) => {
-    return (
-      <span className="stars">
-        {[...Array(5)].map((_, index) => (
-          <span key={index} className={index < rating ? "full-star" : "empty-star"}>
-            {index < rating ? '★' : '☆'}
-          </span>
-        ))}
-        <span className="rating-number"> ({rating.toFixed(1)})</span>
-      </span>
-    );
-  };
+  const filledStars = Math.floor(rating);  // Use floor instead of directly comparing decimal rating
+  const hasHalfStar = rating - filledStars >= 0.5; // Check if there's a half star
+
+  return (
+    <span className="stars">
+      {[...Array(5)].map((_, index) => (
+        <span key={index} className={
+          index < filledStars ? "full-star" :
+          index === filledStars && hasHalfStar ? "half-star" :
+          "empty-star"
+        }>
+          {index < filledStars ? '★' : index === filledStars && hasHalfStar ? '⯪' : '☆'}
+        </span>
+      ))}
+      <span className="rating-number"> ({rating.toFixed(1)})</span>
+    </span>
+  );
+};
+
 
   const renderUserStars = (meal) => {
     const userRating = userRatings[meal] || 0;

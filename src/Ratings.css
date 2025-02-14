@@ -59,8 +59,19 @@
 }
 
 .half-star {
-  color: orange;
+  position: relative;
+  display: inline-block;
+  color: lightgray; /* Default empty star */
 }
+
+.half-star::before {
+  content: '★';  /* Use the filled star */
+  position: absolute;
+  width: 50%; /* Half-width */
+  overflow: hidden;
+  color: gold; /* Make the half star yellow */
+}
+
 
 .empty-star {
   color: lightgray;

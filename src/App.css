@@ -14,9 +14,9 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;  /* Ensure full width */
+  width: 100%;
   z-index: 1000;
-  box-sizing: border-box; /* Prevent extra width from padding */
+  box-sizing: border-box;
 }
 
 .navbar .logo h1 {
@@ -43,12 +43,17 @@
   color: #128ef3;
 }
 
-/* Mobile dropdown */
+
 .menu-toggle {
   display: none;
   color: white;
   font-size: 24px;
   cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+
+.menu-toggle.open {
+  transform: rotate(-180deg);
 }
 
 @media screen and (max-width: 768px) {
@@ -71,6 +76,7 @@
 
   .nav-links.open {
     display: flex;
+    
   }
 
   .nav-links a {
