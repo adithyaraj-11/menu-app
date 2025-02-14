@@ -4,7 +4,7 @@ import './menu.css';
 
 function Menu({ day, week }) {
   const [menuItems, setMenuItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -13,6 +13,7 @@ function Menu({ day, week }) {
     }
 
     async function fetchMenu() {
+      setIsLoading(true); // Start loading
       try {
         // Fetch menu items from Supabase
         const { data: menuData, error: menuError } = await supabase
@@ -50,15 +51,14 @@ function Menu({ day, week }) {
         }, []);
 
         setMenuItems(menuWithRatings);
-        setLoading(false);
       } catch (err) {
         setError(err.message);
-        setLoading(false);
       }
+      setIsLoading(false); // Stop loading
     }
   }, [day, week]);
 
-  if (loading) return <div className='loading'><div>Loading menu...</div></div>;
+  if (isLoading) return <div className='loading'><div>Loading menu...</div></div>;
   if (error) return <div className='loading'><div>Error: {error}</div></div>;
 
   return (

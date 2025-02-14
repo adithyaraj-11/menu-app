@@ -2,7 +2,8 @@
 .ratings {
   text-align: center;
   padding: 20px;
-  overflow-x: hidden; /* Prevents horizontal scrolling */
+  overflow-x: hidden;
+  min-height: 78vh; 
 }
 
 /* Ensure the table is contained */

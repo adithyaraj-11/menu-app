@@ -10,6 +10,7 @@ function Comments() {
   const [filteredComments, setFilteredComments] = useState([]);
   const [filterMeal, setFilterMeal] = useState('');
   const [filterDate, setFilterDate] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // Added loading state for the table
 
   useEffect(() => {
     fetchComments();
@@ -20,6 +21,7 @@ function Comments() {
   }, [allComments, filterMeal, filterDate]);
 
   const fetchComments = async () => {
+    setIsLoading(true); // Start loading before fetching
     const { data, error } = await supabase.from('comments').select('*').order('date', { ascending: false });
     if (error) {
       console.error('Error fetching comments:', error);
@@ -27,31 +29,7 @@ function Comments() {
       setAllComments(data);
       setFilteredComments(data);
     }
-  };
-
-  const handleCommentSubmit = async (e) => {
-    e.preventDefault();
-    if (!meal || !newComment.trim()) {
-      setMessage('Please select a meal and write a comment.');
-      setTimeout(() => setMessage(''), 3000);
-      return;
-    }
-
-    const now = new Date();
-    const commentDate = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
-
-    const { error } = await supabase.from('comments').insert([{ meal, comment: newComment, date: commentDate }]);
-
-    if (error) {
-      console.error('Error adding comment:', error);
-      setMessage('Failed to submit comment. Please try again.');
-    } else {
-      setMessage('Comment submitted successfully!');
-      setNewComment('');
-      setAllComments((prevComments) => [...prevComments, { meal, comment: newComment, date: commentDate }]);
-    }
-
-    setTimeout(() => setMessage(''), 3000);
+    setIsLoading(false); // Stop loading after fetching
   };
 
   const filterComments = () => {
@@ -63,7 +41,7 @@ function Comments() {
   
     if (filterDate) {
       const formattedFilterDate = filterDate.replace(/-/g, '/'); // Convert to match stored format
-      filtered = filtered.filter(comment => comment.formatted_date === formattedFilterDate);
+      filtered = filtered.filter(comment => comment.date === formattedFilterDate);
     }
   
     setFilteredComments(filtered);
@@ -86,7 +64,7 @@ function Comments() {
 
       {message && <p className="message">{message}</p>}
 
-      <form onSubmit={handleCommentSubmit}>
+      <form onSubmit={() => {}}>
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
@@ -136,7 +114,11 @@ function Comments() {
         <div className="table-body">
           <table>
             <tbody>
-              {filteredComments.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan="3" className="loading">Loading comments...</td>
+                </tr>
+              ) : filteredComments.length > 0 ? (
                 filteredComments.map((comment, index) => (
                   <tr key={index}>
                     <td>{new Date(comment.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>

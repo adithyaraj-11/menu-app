@@ -77,7 +77,7 @@ function App() {
     <div className="App">
       <nav className="navbar">
         <div className="logo">
-          <h1>Mega Mess Menu</h1>
+          <h1>Mega Mess App</h1>
         </div>
         <div 
             className={`menu-toggle ${menuOpen ? 'open' : ''}`} 
