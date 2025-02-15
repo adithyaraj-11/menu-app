@@ -1,4 +1,4 @@
-/* General styles for the ratings component */
+
 .ratings {
   text-align: center;
   padding: 20px;
@@ -6,10 +6,10 @@
   min-height: 78vh; 
 }
 
-/* Ensure the table is contained */
+
 .table-container {
   width: 100%;
-  overflow-x: auto; /* Enables horizontal scrolling if needed */
+  overflow-x: auto; 
 }
 
 .ratings h2 {
@@ -18,10 +18,10 @@
   color: #333;
 }
 
-/* Table styling */
+
 .ratings table {
   width: 100%;
-  min-width: 600px; /* Prevents table from squishing */
+  min-width: 600px; 
   border-collapse: collapse;
   margin: 20px auto;
 }
@@ -47,12 +47,12 @@
   background-color: #eaeaea;
 }
 
-/* Star rating styles */
+
 .stars {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem; /* Adjust font size for larger stars */
+  font-size: 2rem; 
 }
 
 .full-star {
@@ -62,17 +62,16 @@
 .half-star {
   position: relative;
   display: inline-block;
-  color: lightgray; /* Default empty star */
+  color: lightgray; 
 }
 
 .half-star::before {
-  content: '★';  /* Use the filled star */
+  content: '★';  
   position: absolute;
-  width: 50%; /* Half-width */
+  width: 50%; 
   overflow: hidden;
-  color: gold; /* Make the half star yellow */
+  color: gold;
 }
-
 
 .empty-star {
   color: lightgray;
@@ -84,7 +83,7 @@
   margin-left: 8px;
 }
 
-/* User rating stars */
+
 .stars span {
   cursor: pointer;
   transition: color 0.2s;
@@ -93,14 +92,13 @@
 .avg .stars span {
   pointer-events: none;
   cursor: default;
-  transition: none; /* Removes hover transition */
+  transition: none; 
 }
 
 .stars span:hover {
-  color: gold; /* Hover effect */
+  color: gold; 
 }
 
-/* Submit button styling */
 .submit-btn-container {
   display: flex;
   justify-content: center;
@@ -115,36 +113,41 @@
   border: none;
   cursor: pointer;
   margin-top: 20px;
-  width: auto; /* Make sure the button isn't stretched */
+  width: auto; 
 }
 
 .submit-btn:hover {
   background-color: #45a049;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
   .ratings {
-      padding: 10px; /* Adjust padding */
+      padding: 10px; 
   }
 
   .table-container {
-      overflow-x: auto; /* Ensures scrolling if needed */
+      overflow-x: auto; 
   }
 
   .ratings table {
       width: 100%;
-      min-width: 100%; /* Prevents overflow */
+      min-width: 100%; 
   }
 
   .ratings th,
   .ratings td {
       padding: 8px 10px;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+  }
+
+  .rating-number {
+    font-size: 0.8rem !important;
+    color: #333;
+    margin-left: 8px;
   }
 
   .stars {
-      font-size: 1.5rem;
+      font-size: 1.5rem !important; 
   }
 
   .submit-btn {
