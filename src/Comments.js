@@ -48,6 +48,32 @@ function Comments() {
     setFilteredComments(filtered);
   };
   
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page reload
+  
+    if (!newComment || !meal) {
+      setMessage("Please select a meal and enter a comment.");
+      return;
+    }
+  
+    const { error } = await supabase.from("comments").insert([
+      {
+        meal: meal,
+        comment: newComment,
+        date: new Date().toISOString().split("T")[0], // YYYY-MM-DD format
+        formatted_date: new Date().toISOString().split("T")[0].replace(/-/g, "/") // YYYY/MM/DD format
+      }
+    ]);
+  
+    if (error) {
+      console.error("Error submitting comment:", error);
+      setMessage("Failed to submit comment.");
+    } else {
+      setMessage("Comment submitted successfully!");
+      setNewComment(""); // Clear input
+      fetchComments(); // Refresh comments
+    }
+  };
   
   
 
@@ -68,14 +94,15 @@ function Comments() {
 
       {message && <p className="message">{message}</p>}
 
-      <form onSubmit={() => {}}>
-        <textarea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Write a comment..."
-        />
-        <button type="submit">Submit Comment</button>
-      </form>
+      <form onSubmit={handleSubmit}>
+      <textarea
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
+        placeholder="Write a comment..."
+      />
+      <button type="submit">Submit Comment</button>
+    </form>
+
 
       <div className="filters">
         <h3>Filter Comments</h3>
