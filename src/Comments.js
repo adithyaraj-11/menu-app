@@ -40,12 +40,16 @@ function Comments() {
     }
   
     if (filterDate) {
-      const formattedFilterDate = filterDate.replace(/-/g, '/'); // Convert to match stored format
-      filtered = filtered.filter(comment => comment.date === formattedFilterDate);
+      filtered = filtered.filter(comment => {
+        return comment.formatted_date === filterDate; // Compare against formatted_date
+      });
     }
   
     setFilteredComments(filtered);
   };
+  
+  
+  
 
   return (
     <div className="comments">
@@ -89,15 +93,20 @@ function Comments() {
         <div className="date-filter">
           <label htmlFor="filterDate">Filter by Date: </label>
           <input
-            id="filterDate"
-            type="date"
-            value={filterDate ? filterDate.split('/').reverse().join('-') : ''}
-            onChange={(e) => {
-              if (!e.target.value) return;
-              const [year, month, day] = e.target.value.split('-');
-              setFilterDate(`${year}/${month}/${day}`);
-            }}
-          />
+          id="filterDate"
+          type="date"
+          value={filterDate ? filterDate.replace(/\//g, '-') : ''} // Convert YYYY/MM/DD → YYYY-MM-DD for input
+          onChange={(e) => {
+            if (!e.target.value) return;
+
+            // Convert YYYY-MM-DD → YYYY/MM/DD for filtering
+            const formattedDate = e.target.value.replace(/-/g, '/');
+
+            setFilterDate(formattedDate); // Use YYYY/MM/DD for filtering
+          }}
+        />
+
+
         </div>
       </div>
 
