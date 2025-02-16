@@ -13,49 +13,49 @@ function Menu({ day, week }) {
     }
 
     async function fetchMenu() {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       try {
-        // Fetch menu items from Supabase
+        const mappedWeek = week === 3 ? 1 : week === 4 ? 2 : week;
+    
         const { data: menuData, error: menuError } = await supabase
           .from("menu")
           .select("meal, item")
           .eq("day", day)
-          .eq("week", week);
-
+          .eq("week", mappedWeek);
+    
         if (menuError) throw menuError;
-
-        // Fetch ratings from Supabase
+    
         const { data: ratingsData, error: ratingsError } = await supabase
           .from("ratings")
           .select("meal, average_rating");
-
+    
         if (ratingsError) throw ratingsError;
-
-        // Merge ratings into menu items
+    
         const menuWithRatings = menuData.reduce((acc, { meal, item }) => {
           let mealEntry = acc.find(m => m.meal.toLowerCase() === meal.toLowerCase());
-
+    
           if (!mealEntry) {
             mealEntry = { meal, items: [], average_rating: null };
             acc.push(mealEntry);
           }
-
+    
           mealEntry.items.push(item);
-
+    
           const rating = ratingsData.find(r => r.meal.toLowerCase() === meal.toLowerCase());
           if (rating) {
             mealEntry.average_rating = rating.average_rating > 0 ? rating.average_rating : null;
           }
-
+    
           return acc;
         }, []);
-
+    
         setMenuItems(menuWithRatings);
       } catch (err) {
         setError(err.message);
       }
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
+    
   }, [day, week]);
 
   if (isLoading) return <div className='loading'><div>Loading menu...</div></div>;
