@@ -10,27 +10,28 @@ import image2 from './week2&4.jpg';
 
 function App() {
   const [currentDay, setCurrentDay] = useState('');
-  const [monthWeekNumber, setMonthWeekNumber] = useState(1);
+  const [weekNumber, setWeekNumber] = useState(1);
   const [showImages, setShowImages] = useState(false);
   const [showRatings, setShowRatings] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false); // State for dropdown menu
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const date = new Date();
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     setCurrentDay(dayNames[date.getDay()]);
-
-    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    let firstMonday = startOfMonth;
-    if (firstMonday.getDay() !== 1) {
-      firstMonday.setDate(firstMonday.getDate() + ((8 - firstMonday.getDay()) % 7));
+  
+    const firstOfYear = new Date(date.getFullYear(), 0, 1);
+    while (firstOfYear.getDay() !== 1) {
+      firstOfYear.setDate(firstOfYear.getDate() + 1);
     }
-
-    const daysSinceFirstMonday = Math.floor((date - firstMonday) / (1000 * 60 * 60 * 24));
-    let currentMonthWeek = Math.ceil((daysSinceFirstMonday + 1) / 7);
-    setMonthWeekNumber(currentMonthWeek > 4 ? 1 : currentMonthWeek);
+  
+    const diffInTime = date - firstOfYear;
+    const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24));
+    const totalWeeks = Math.floor(diffInDays / 7);
+    const calculatedWeek = (totalWeeks % 4) + 1;
+    setWeekNumber(calculatedWeek);
   }, []);
 
   const handleMenuClick = () => {
@@ -97,7 +98,7 @@ function App() {
       {!showImages && !showRatings && !showComments && !showHistory && (
         <header className="App-header">
           <h2>Menu for {currentDay}</h2>
-          <h4>Week {monthWeekNumber} of the month</h4>
+          <h4>Week {weekNumber}</h4>
         </header>
       )}
 
@@ -109,19 +110,17 @@ function App() {
       )}
 
       {!showImages && showRatings && <Ratings />}
-      {!showImages && !showRatings && !showComments && !showHistory && <Menu day={currentDay} week={monthWeekNumber} />}
+      {!showImages && !showRatings && !showComments && !showHistory && <Menu day={currentDay} week={weekNumber} />}
       {showComments && <Comments />}
       {showHistory && <History />}
 
       <footer className="footer">
-      Developed with 
-      <img src={logo} alt="React Logo" className="react-logo" />
-      , by Adithyaraj K
-    </footer>
+        Developed with 
+        <img src={logo} alt="React Logo" className="react-logo" />
+        , by Adithyaraj K
+      </footer>
     </div>
-    
   );
 }
-
 
 export default App;
