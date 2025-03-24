@@ -4,14 +4,15 @@ import './History.css';
 
 function History() {
   const [history, setHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // New loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // Default to current month
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [selectedMonth]);
 
   const fetchHistory = async () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     const { data, error } = await supabase
       .from('past_ratings')
       .select('*')
@@ -20,9 +21,11 @@ function History() {
     if (error) {
       console.error('Error fetching history:', error);
     } else {
-      setHistory(data);
+      // Filter data by selected month
+      const filteredData = data.filter(entry => entry.date.split('-')[1].startsWith(selectedMonth.split('-')[1]));
+      setHistory(filteredData);
     }
-    setIsLoading(false); // Stop loading
+    setIsLoading(false);
   };
 
   const renderStars = (rating) => {
@@ -42,8 +45,17 @@ function History() {
   return (
     <div className="history">
       <h2>Past Ratings</h2>
+      
+      <label id="month-filter">Filter by Month: </label>
+      <input
+        type="month"
+        id="month-filter"
+        value={selectedMonth}
+        onChange={(e) => setSelectedMonth(e.target.value)}
+      />
+      
       <div className="history-table-container">
-        {isLoading ? ( // Show loading message while fetching data
+        {isLoading ? (
           <p>Loading history...</p>
         ) : (
           <table>
@@ -69,7 +81,7 @@ function History() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5">No history available.</td>
+                  <td colSpan="5">No history available for this month.</td>
                 </tr>
               )}
             </tbody>

@@ -5,6 +5,10 @@
     min-height: 78vh;
     text-align: center;
   }
+
+  .history #month-filter {
+    margin: 20px 10px;
+  }
   
   /* Section heading */
   .history h2 {
@@ -16,7 +20,7 @@
   /* Table container */
   .history-table-container {
     width: 100%;
-    max-height: 300px; /* Reduce max height */
+    max-height: 450px; /* Reduce max height */
     overflow-y: auto; /* Vertical scrolling */
     overflow-x: auto; /* Horizontal scrolling */
   }
