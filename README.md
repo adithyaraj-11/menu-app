@@ -16,10 +16,6 @@ A dynamic and responsive web app that simplifies **mess menu tracking and feedba
 - **Backend:** Firebase / Node.js
 - **Hosting:** Vercel
 
-## 📸 Screenshots
-
-*(Add images of your app here)*
-
 ## 🛠 Installation
 
 ```sh
