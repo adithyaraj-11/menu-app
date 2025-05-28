@@ -12,7 +12,7 @@ A dynamic and responsive web app that simplifies **mess menu tracking and feedba
 
 ## 🔧 Tech Stack
 
-- **Frontend:** React, Tailwind CSS
+- **Frontend:** React, CSS
 - **Backend:** Supabase / Node.js
 - **Hosting:** Vercel
 
